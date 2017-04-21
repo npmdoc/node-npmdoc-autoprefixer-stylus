@@ -1,0 +1,149 @@
+<div class="apidocDiv">
+<style>
+/*csslint
+*/
+.apidocDiv {
+    background: #fff;
+    font-family: Arial, Helvetica, sans-serif;
+}
+.apidocDiv a[href] {
+    color: #33f;
+    font-weight: bold;
+    text-decoration: none;
+}
+.apidocDiv a[href]:hover {
+    text-decoration: underline;
+}
+.apidocCodeCommentSpan {
+    background: #bbf;
+    color: #000;
+    display: block;
+}
+.apidocCodeKeywordSpan {
+    color: #d00;
+    font-weight: bold;
+}
+.apidocCodePre {
+    background: #eef;
+    border: 1px solid;
+    color: #777;
+    padding: 5px;
+    white-space: pre-wrap;
+}
+.apidocFooterDiv {
+    margin-top: 20px;
+    text-align: center;
+}
+.apidocModuleLi {
+    margin-top: 10px;
+}
+.apidocSectionDiv {
+    border-top: 1px solid;
+    margin-top: 20px;
+}
+.apidocSignatureSpan {
+    color: #777;
+    font-weight: bold;
+}
+</style>
+<h1>api documentation for
+    <a
+
+    >autoprefixer-stylus (v0.13.0)</a>
+</h1>
+<h4>autoprefixer for stylus</h4>
+<div class="apidocSectionDiv"><a
+    href="#apidoc.tableOfContents"
+    id="apidoc.tableOfContents"
+><h1>table of contents</h1></a><ol>
+
+    <li class="apidocModuleLi"><a href="#apidoc.module.autoprefixer-stylus">module autoprefixer-stylus</a><ol>
+
+        <li>
+
+            <a class="apidocElementLiA" href="#apidoc.element.autoprefixer-stylus.autoprefixer-stylus">
+            function <span class="apidocSignatureSpan"></span>autoprefixer-stylus
+            <span class="apidocSignatureSpan">(opts)</span>
+            </a>
+
+        </li>
+
+    </ol></li>
+
+</ol></div>
+
+<div class="apidocSectionDiv">
+<h1><a href="#apidoc.module.autoprefixer-stylus" id="apidoc.module.autoprefixer-stylus">module autoprefixer-stylus</a></h1>
+
+
+    <h2>
+        <a href="#apidoc.element.autoprefixer-stylus.autoprefixer-stylus" id="apidoc.element.autoprefixer-stylus.autoprefixer-stylus">
+        function <span class="apidocSignatureSpan"></span>autoprefixer-stylus
+        <span class="apidocSignatureSpan">(opts)</span>
+        </a>
+    </h2>
+    <ul>
+    <li>description and source-code<pre class="apidocCodePre">autoprefixer-stylus = function (opts) {
+  if (!opts) { opts = {}; }
+
+  // pull `hideWarnings` out so we can pass opts to autoprefixer
+  var showWarnings = !opts.hideWarnings;
+  delete opts.hideWarnings;
+
+  return function(style){
+    style = this || style;
+    var filename = style.options.filename;
+
+    style.on(&#x27;end&#x27;, function(err, css){
+
+      // configure the options to be passed to autoprefixer
+      var process_opts = {
+        from: filename,
+        to: path.join(
+          path.dirname(filename),
+          path.basename(filename, path.extname(filename))
+        ) + &#x27;.css&#x27;
+      }
+
+      // if there is a stylus sourcemap, ensure autoprefixer also generates one
+      if (style.sourcemap) {
+        process_opts.map = { annotation: false }
+      }
+
+      // run autoprefixer
+      var res = postcss([ap(opts)]).process(css, process_opts);
+
+      // if sourcemaps are generated, combine the two
+      if (res.map &#x26;&#x26; style.sourcemap) {
+        var combined_map = map.transfer({
+          fromSourceMap: res.map.toString(),
+          toSourceMap: style.sourcemap
+        });
+
+        // then set the combined result as the new sourcemap
+        style.sourcemap = JSON.parse(combined_map);
+      }
+
+      if (showWarnings) {
+        res.warnings().forEach(console.error);
+      }
+
+      // return the css output
+      return res.css;
+    });
+
+  }
+
+}</pre></li>
+    <li>example usage<pre class="apidocCodePre">n/a</pre></li>
+    </ul>
+
+
+</div>
+
+<div class="apidocFooterDiv">
+    [ this document was created with
+    <a href="https://github.com/kaizhu256/node-utility2" target="_blank">utility2</a>
+    ]
+</div>
+</div>
